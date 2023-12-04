@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"time"
+
+	"github.com/go-chi/jwtauth/v5"
 )
 
 type response struct {
@@ -29,8 +32,9 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 		return
 	}
-
-	_, tokenString, _ := utils.TokenAuth.Encode(map[string]interface{}{"username": username, "hostname": "test123"})
+	claims := map[string]interface{}{"username": username, "hostname": "test123"}
+	jwtauth.SetExpiry(claims, time.Now().Add(time.Hour*1))
+	_, tokenString, _ := utils.TokenAuth.Encode(claims)
 
 	res := response{Username: username, Token: tokenString}
 	jsonRes, _ := json.Marshal(res)
