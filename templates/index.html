@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.9"
+      integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/public/output.css" rel="stylesheet" />
+    <title>User Management</title>
+  </head>
+  <body>
+    <main
+      class="bg-gradient-to-b from-cyan-500 to-blue-500 p-9 grid items-center h-screen"
+    >
+      {{ . }}
+      <form
+        hx-post="/auth"
+        class="flex flex-col border border-gray-500 mx-auto rounded-lg p-4 h-fit bg-white"
+      >
+        <label for="username" class="text-lg">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          class="border border-black/50 mb-2 p-2"
+        />
+        <label for="password" class="text-lg">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          class="border border-black/50 mb-2 p-2"
+        />
+        <button
+          type="submit m-4"
+          class="border bg-blue-600 text-white rounded p-2 text-lg"
+        >
+          Submit
+        </button>
+      </form>
+    </main>
+  </body>
+</html>
