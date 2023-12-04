@@ -1,19 +1,23 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/go-chi/jwtauth/v5"
 	"gopkg.in/ldap.v2"
 )
- 
+
 var TokenAuth *jwtauth.JWTAuth
 
 func init() {
 	// change secret as it is easily guessable and remove it from source code
 	// fmt.Println(os.Getenv("big big secret :)"))
-	TokenAuth = jwtauth.New("HS256", []byte("secret"), nil )
+	secret := os.Getenv("SECRET")
+	fmt.Printf(secret)
+	TokenAuth = jwtauth.New("HS256", []byte(secret), nil)
 
 	// For debugging/example purposes, we generate and print
 	// a sample jwt token with claims `user_id:123` here:
@@ -21,7 +25,7 @@ func init() {
 	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
 }
 
-func Authenticate(username string, password string) error{
+func Authenticate(username string, password string) error {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", "ldap.forumsys.com", 389))
 	if err != nil {
 		log.Fatal(err)
@@ -63,9 +67,8 @@ func Authenticate(username string, password string) error{
 
 	if len(result.Entries) != 1 {
 		fmt.Println("User does not exist or too many entries returned")
-		return err
+		return errors.New("User does not exist or too many entries returned")
 	}
-	// Search for the given username
 	log.Println(result.Entries[0])
 
 	userdn := result.Entries[0].DN
@@ -78,6 +81,7 @@ func Authenticate(username string, password string) error{
 
 	}
 	log.Println("Logged in")
+	// log into database
 
 	return nil
 }
