@@ -26,8 +26,9 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	err := utils.Authenticate(username, password)
 
 	if err != nil {
-		http.Error(w, "Invalid username or password.", http.StatusBadRequest)
-		htmlStr := fmt.Sprint("<span class='p-2 border border-red-400 rounded'>Invalid username or password.</span>")
+		fmt.Println("Error")
+		// http.Error(w, "Invalid username or password.", http.StatusBadRequest)
+		htmlStr := fmt.Sprint("<div class='my-5'><span class='p-3 bg-red-400 rounded text-white'>Invalid username or password.</span></div>")
 		tmpl, _ := template.New("error").Parse(htmlStr)
 		tmpl.Execute(w, nil)
 		return

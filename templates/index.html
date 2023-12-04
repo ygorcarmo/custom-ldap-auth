@@ -19,6 +19,7 @@
       {{ . }}
       <form
         hx-post="/auth"
+        hx-target="#response-div"
         class="flex flex-col border border-gray-500 mx-auto rounded-lg p-4 h-fit bg-white"
       >
         <label for="username" class="text-lg">Username</label>
@@ -41,8 +42,8 @@
         >
           Submit
         </button>
+        <div id="response-div"></div>
       </form>
-      <div id="responseHolder"></div>
     </main>
   </body>
 </html>

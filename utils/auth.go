@@ -4,45 +4,50 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/go-chi/jwtauth/v5"
 	"gopkg.in/ldap.v2"
 )
 
 var TokenAuth *jwtauth.JWTAuth
-
 func init() {
 	// change secret as it is easily guessable and remove it from source code
 	// fmt.Println(os.Getenv("big big secret :)"))
-	secret := os.Getenv("SECRET")
-	fmt.Printf(secret)
+	// secret := os.Getenv("SECRET")
+	secret := "You will never guess it"
+	fmt.Println(secret)
 	TokenAuth = jwtauth.New("HS256", []byte(secret), nil)
 
 	// For debugging/example purposes, we generate and print
 	// a sample jwt token with claims `user_id:123` here:
 	_, tokenString, _ := TokenAuth.Encode(map[string]interface{}{"user_id": 123})
-	fmt.Printf("DEBUG: a sample jwt is %s\n\n", tokenString)
+	fmt.Printf("DEBUG: a sample jwt is %s\n", tokenString)
 }
 
+
 func Authenticate(username string, password string) error {
-	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", "ldap.forumsys.com", 389))
-	if err != nil {
-		log.Fatal(err)
+	
+	ldapServer := "ldap.forumsys.com"
+	
+	l, ldapError := ldap.Dial("tcp", fmt.Sprintf("%s:%d", ldapServer, 389))
+	if ldapError != nil {
+		log.Fatal(ldapError)
 	}
 	// Reconnect with TLS
 	// err = l.StartTLS(&tls.Config{InsecureSkipVerify: true})
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-
 	// close connection when done
 	defer l.Close()
+	fmt.Printf("Connected to ldap server at %s\n", ldapServer)
+	
 
 	// First bind with a read only user
-	err = l.Bind("cn=read-only-admin,dc=example,dc=com", "password")
+	err := l.Bind("cn=read-only-admin,dc=example,dc=com", "password")
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	// Search for the given username
